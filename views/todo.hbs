@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #ff7e5f, #feb47b); 
+}
+
+.todo-container {
+    max-width: 800px;
+    width: 100%;
+    border: 2px solid #ccc;
+    padding: 40px;
+    border-radius: 20px;
+    background-color: #fff; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+}
+
+.input-group {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.input-group input {
+    border: 1px solid #ced4da; 
+    border-radius: 5px; 
+    padding: 8px; 
+    width: calc(100% - 38px); 
+}
+
+.input-group button {
+    border: 1px solid #ced4da;
+    border-radius: 10px; 
+    background-color: #007bff; 
+    color: #fff;
+}
+
+.input-group button:hover {
+    background-color: #02923e; 
+    color: #111110;
+}
+
+.completed input {
+    border: 1px solid #6c757d; 
+    background-color: #f8f9fa; 
+}
+.priority {
+    margin-top: 5px; 
+}
+    </style>
+</head>
+<body>
+    <div class="container todo-container">
+        <h1 class="text-center space-bottom">TODO LIST</h1>
+        <form action="/" method="post" class="space-bottom">
+            <div class="input-group">
+                <input type="text" name="title" class="form-control" placeholder="Add Todo">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </div>
+            </div>
+        </form>
+
+        {{#each alltodo as |todo|}}
+            <div class="d-flex justify-content-center space-bottom">
+            
+                <form id="f1" action="/{{todo.id}}?_method=PUT" method="POST" class="px-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control text" name="title" value="{{todo.title}}" disabled>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-success save mx-2" style="display: none;">Save</button>
+                            <button type="button" class="btn btn-secondary edit mx-1">Edit</button>
+                        </div>
+                    </div>
+                </form>
+                        
+                <form action="/{{todo.id}}?_method=DELETE" method="POST">
+                    <button class="btn btn-danger delete" type="submit">Delete</button>
+                </form>
+                
+                            <form method="post" action="dec/{{todo.id}}">
+                                    <button class="btn" type="submit"><i class="bi bi-dash-square"></i></button>
+                            </form>
+                            <form method="post" action="inc/{{todo.id}}">
+                                    <button class="btn" type="submit"><i class="bi bi-plus-square"></i></button>
+                            </form>
+                           <div class="priority"> {{todo.priority}}</div>
+
+                <form action="/{{todo.id}}?_method=POST" method="post">
+                <button type="submit" class="btn"><i class="bi bi-check-circle font-weight-bold" style="font-size:18px; color:green; font-weight: 900;"></i></button>
+                </form>
+                
+            </div>
+        {{/each}}
+         <h1 class="text-center space-bottom">Completed Task's</h1>
+        {{#each completedTodo as |done|}}
+            <div class="d-flex justify-content-start px-5 space-bottom">
+                <div class="w-100 completed">
+                    <input type="text" class="form-control text" name="title" value="{{done.title}}" disabled>
+                </div>
+                <form action="/{{done.id}}?_method=POST" method="post" class="btn-group-space">
+                    <button type="submit" class="btn"><i class="bi bi-check-circle-fill " style="font-size:20px; color:green; font-weight: 900;"></i></button>
+                </form>
+            </div>
+        {{/each}}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.querySelectorAll('.edit').forEach(function(editButton) {
+            editButton.addEventListener('click', function() {
+                let form = editButton.closest('form');
+                let input = form.querySelector('.text');
+                let saveButton = form.querySelector('.save');
+                input.disabled = !input.disabled;
+                saveButton.style.display = input.disabled ? 'none' : 'inline-block';
+            });
+        });
+    </script>
+</body>
+</html>
